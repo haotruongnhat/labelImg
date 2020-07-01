@@ -13,7 +13,9 @@ from libs.utils import distance
 import sys
 
 DEFAULT_LINE_COLOR = QColor(0, 255, 0, 128)
-DEFAULT_FILL_COLOR = QColor(150, 0, 0, 128)
+DEFAULT_FILL_COLOR = QColor(0, 150, 0, 128)
+
+DEFAULT_HIGHLIGHT_FILL_COLOR = QColor(150, 0, 0, 128)
 DEFAULT_SELECT_LINE_COLOR = QColor(255, 255, 255)
 DEFAULT_SELECT_FILL_COLOR = QColor(0, 128, 255, 155)
 DEFAULT_VERTEX_FILL_COLOR = QColor(0, 255, 0, 255)
@@ -60,9 +62,12 @@ class Shape(object):
             # with an object attribute. Currently this
             # is used for drawing the pending line a different color.
             self.line_color = line_color
-            
+
         if DEFAULT_FILL_COLOR is not None:
-            self.fill_color = DEFAULT_FILL_COLOR
+            self.normal_fill_color = DEFAULT_FILL_COLOR    
+            
+        if DEFAULT_HIGHLIGHT_FILL_COLOR is not None:
+            self.fill_color = DEFAULT_HIGHLIGHT_FILL_COLOR
 
     def close(self):
         self._closed = True
@@ -134,6 +139,9 @@ class Shape(object):
 
             if self.fill:
                 color = self.select_fill_color if self.selected else self.fill_color
+                painter.fillPath(line_path, color)
+            else:
+                color = self.normal_fill_color
                 painter.fillPath(line_path, color)
 
     def drawVertex(self, path, i):
