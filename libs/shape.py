@@ -13,7 +13,7 @@ from libs.utils import distance
 import sys
 
 DEFAULT_LINE_COLOR = QColor(0, 255, 0, 128)
-DEFAULT_FILL_COLOR = QColor(255, 0, 0, 128)
+DEFAULT_FILL_COLOR = QColor(150, 0, 0, 128)
 DEFAULT_SELECT_LINE_COLOR = QColor(255, 255, 255)
 DEFAULT_SELECT_FILL_COLOR = QColor(0, 128, 255, 155)
 DEFAULT_VERTEX_FILL_COLOR = QColor(0, 255, 0, 255)
@@ -60,6 +60,9 @@ class Shape(object):
             # with an object attribute. Currently this
             # is used for drawing the pending line a different color.
             self.line_color = line_color
+            
+        if DEFAULT_FILL_COLOR is not None:
+            self.fill_color = DEFAULT_FILL_COLOR
 
     def close(self):
         self._closed = True

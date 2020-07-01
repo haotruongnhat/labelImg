@@ -769,16 +769,18 @@ class MainWindow(QMainWindow, WindowMixin):
             shape.difficult = difficult
             shape.close()
             s.append(shape)
+            
 
             if line_color:
                 shape.line_color = QColor(*line_color)
-            else:
-                shape.line_color = generateColorByText(label)
+            # else:
+            #     shape.line_color = generateColorByText(label)
 
             if fill_color:
                 shape.fill_color = QColor(*fill_color)
-            else:
-                shape.fill_color = generateColorByText(label)
+
+            # else:
+            #     shape.fill_color = generateColorByText(label)
 
             self.addLabel(shape)
         self.updateComboBox()
