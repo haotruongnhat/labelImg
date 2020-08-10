@@ -18,6 +18,7 @@ import sys
 class LabelFileFormat(Enum):
     PASCAL_VOC= 1
     YOLO = 2
+    DMPR = 3
 
 
 class LabelFileError(Exception):

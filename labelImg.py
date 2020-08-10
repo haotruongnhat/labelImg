@@ -47,7 +47,7 @@ from libs.yolo_io import TXT_EXT
 from libs.ustr import ustr
 from libs.hashableQListWidgetItem import HashableQListWidgetItem
 
-__appname__ = 'labelImg'
+__appname__ = 'labelImg - ODMPR version'
 
 class WindowMixin(object):
 
@@ -1457,6 +1457,19 @@ class MainWindow(QMainWindow, WindowMixin):
                         self.labelHist = [line]
                     else:
                         self.labelHist.append(line)
+
+    def loadDMPRByFileName(self, jsonPath):
+        if self.filePath is None:
+            return
+        if os.path.isfile(jsonPath) is False:
+            return
+
+        self.set_format(FORMAT_DMPR)
+
+        tVocParseReader = PascalVocReader(jsonPath)
+        shapes = tVocParseReader.getShapes()
+        self.loadLabels(shapes)
+        self.canvas.verified = tVocParseReader.verified
 
     def loadPascalXMLByFilename(self, xmlPath):
         if self.filePath is None:

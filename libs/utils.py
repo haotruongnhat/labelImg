@@ -101,3 +101,13 @@ def natural_sort(list, key=lambda s:s):
         return lambda s: [convert(c) for c in re.split('([0-9]+)', key(s))]
     sort_key = get_alphanum_key_func(key)
     list.sort(key=sort_key)
+    
+def read_json(fp):
+    with open(fp) as f:
+        data = json.load(f)
+    return data
+
+def write_json(fp, data):
+    with open(fp, 'w') as f:
+        json.dump(data, f)
+    
