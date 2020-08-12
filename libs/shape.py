@@ -100,12 +100,13 @@ class Shape(object):
             # for the 1st vertex, and make it non-filled, which
             # may be desirable.
             #self.drawVertex(vrtx_path, 0)
-
             for i, p in enumerate(self.points):
+                if i % 2:
+                    continue
                 line_path.lineTo(p)
                 self.drawVertex(vrtx_path, i)
-            if self.isClosed():
-                line_path.lineTo(self.points[0])
+            # if self.isClosed():
+            #     line_path.lineTo(self.points[0])
 
             painter.drawPath(line_path)
             painter.drawPath(vrtx_path)

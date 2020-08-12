@@ -133,7 +133,7 @@ class PascalVocReader:
         self.filepath = filepath
         self.verified = False
         try:
-            self.parseXML()
+            self.parseJson()
         except:
             pass
 
@@ -148,7 +148,7 @@ class PascalVocReader:
         points = [(xmin, ymin), (xmax, ymin), (xmax, ymax), (xmin, ymax)]
         self.shapes.append((label, points, None, None, difficult))
 
-    def parseXML(self):
+    def parseJson(self):
         assert self.filepath.endswith(XML_EXT), "Unsupport file format"
         parser = etree.XMLParser(encoding=ENCODE_METHOD)
         xmltree = ElementTree.parse(self.filepath, parser=parser).getroot()

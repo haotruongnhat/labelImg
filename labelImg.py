@@ -44,6 +44,8 @@ from libs.pascal_voc_io import PascalVocReader
 from libs.pascal_voc_io import XML_EXT
 from libs.yolo_io import YoloReader
 from libs.yolo_io import TXT_EXT
+from libs.dmpr_io import DMPRReader
+from libs.dmpr_io import JSON_EXT
 from libs.ustr import ustr
 from libs.hashableQListWidgetItem import HashableQListWidgetItem
 
@@ -229,9 +231,9 @@ class MainWindow(QMainWindow, WindowMixin):
                       'Ctrl+S', 'save', getStr('saveDetail'), enabled=False)
 
         isUsingPascalVoc = self.labelFileFormat == LabelFileFormat.PASCAL_VOC
-        save_format = action('&PascalVOC' if isUsingPascalVoc else '&YOLO',
-                             self.change_format, 'Ctrl+',
-                             'format_voc' if isUsingPascalVoc else 'format_yolo',
+        save_format = action('&PascalVOC' if isUsingPascalVoc else '&DMPR',
+                             self.change_format, 'Ctrl+N',
+                             'format_voc' if isUsingPascalVoc else 'format_dmpr',
                              getStr('changeSaveFormat'), enabled=True)
 
         saveAs = action(getStr('saveAs'), self.saveFileAs,
@@ -511,11 +513,20 @@ class MainWindow(QMainWindow, WindowMixin):
             self.actions.save_format.setIcon(newIcon("format_yolo"))
             self.labelFileFormat = LabelFileFormat.YOLO
             LabelFile.suffix = TXT_EXT
-
+            
+        elif save_format == FORMAT_DMPR:
+            self.actions.save_format.setText(FORMAT_DMPR)
+            self.actions.save_format.setIcon(newIcon("format_yolo"))
+            self.labelFileFormat = LabelFileFormat.DMPR
+            LabelFile.suffix = JSON_EXT
+            
     def change_format(self):
+        # print(self.labelFileFormat)
         if self.labelFileFormat == LabelFileFormat.PASCAL_VOC:
-            self.set_format(FORMAT_YOLO)
-        elif self.labelFileFormat == LabelFileFormat.YOLO:
+            self.set_format(FORMAT_DMPR)
+        # elif self.labelFileFormat == LabelFileFormat.YOLO:
+        #     self.set_format(FORMAT_PASCALVOC)
+        elif self.labelFileFormat == LabelFileFormat.DMPR:
             self.set_format(FORMAT_PASCALVOC)
         else:
             raise ValueError('Unknown label file format.')
@@ -768,14 +779,14 @@ class MainWindow(QMainWindow, WindowMixin):
         s = []
         for label, points, line_color, fill_color, difficult in shapes:
             shape = Shape(label=label)
-            for x, y in points:
-
+            for x, y in points:    
                 # Ensure the labels are within the bounds of the image. If not, fix them.
                 x, y, snapped = self.canvas.snapPointToCanvas(x, y)
                 if snapped:
                     self.setDirty()
 
                 shape.addPoint(QPointF(x, y))
+                
             shape.difficult = difficult
             shape.close()
             s.append(shape)
@@ -791,6 +802,7 @@ class MainWindow(QMainWindow, WindowMixin):
                 shape.fill_color = generateColorByText(label)
 
             self.addLabel(shape)
+            
         self.updateComboBox()
         self.canvas.loadShapes(s)
 
@@ -831,6 +843,11 @@ class MainWindow(QMainWindow, WindowMixin):
                 if annotationFilePath[-4:].lower() != ".txt":
                     annotationFilePath += TXT_EXT
                 self.labelFile.saveYoloFormat(annotationFilePath, shapes, self.filePath, self.imageData, self.labelHist,
+                                                   self.lineColor.getRgb(), self.fillColor.getRgb())
+            elif self.labelFileFormat == LabelFileFormat.DMPR:
+                if annotationFilePath[-5:].lower() != ".json":
+                    annotationFilePath += JSON_EXT
+                self.labelFile.saveDMPRFormat(annotationFilePath, shapes, self.filePath, self.imageData, self.labelHist,
                                                    self.lineColor.getRgb(), self.fillColor.getRgb())
             else:
                 self.labelFile.save(annotationFilePath, shapes, self.filePath, self.imageData,
@@ -1068,6 +1085,7 @@ class MainWindow(QMainWindow, WindowMixin):
                     os.path.splitext(self.filePath)[0])
                 xmlPath = os.path.join(self.defaultSaveDir, basename + XML_EXT)
                 txtPath = os.path.join(self.defaultSaveDir, basename + TXT_EXT)
+                jsonPath = os.path.join(self.defaultSaveDir, basename + JSON_EXT)
 
                 """Annotation file priority:
                 PascalXML > YOLO
@@ -1076,13 +1094,19 @@ class MainWindow(QMainWindow, WindowMixin):
                     self.loadPascalXMLByFilename(xmlPath)
                 elif os.path.isfile(txtPath):
                     self.loadYOLOTXTByFilename(txtPath)
+                elif os.path.isfile(jsonPath):
+                    self.loadDMPRByFileName(jsonPath)
             else:
                 xmlPath = os.path.splitext(filePath)[0] + XML_EXT
                 txtPath = os.path.splitext(filePath)[0] + TXT_EXT
+                jsonPath = os.path.splitext(filePath)[0] + JSON_EXT
+
                 if os.path.isfile(xmlPath):
                     self.loadPascalXMLByFilename(xmlPath)
                 elif os.path.isfile(txtPath):
                     self.loadYOLOTXTByFilename(txtPath)
+                elif os.path.isfile(jsonPath):
+                    self.loadDMPRByFileName(jsonPath)
 
             self.setWindowTitle(__appname__ + ' ' + filePath)
 
@@ -1466,10 +1490,10 @@ class MainWindow(QMainWindow, WindowMixin):
 
         self.set_format(FORMAT_DMPR)
 
-        tVocParseReader = PascalVocReader(jsonPath)
-        shapes = tVocParseReader.getShapes()
+        tDMPRReader = DMPRReader(jsonPath, self.image)
+        shapes = tDMPRReader.getShapes()
         self.loadLabels(shapes)
-        self.canvas.verified = tVocParseReader.verified
+        self.canvas.verified = tDMPRReader.verified
 
     def loadPascalXMLByFilename(self, xmlPath):
         if self.filePath is None:
@@ -1493,7 +1517,6 @@ class MainWindow(QMainWindow, WindowMixin):
         self.set_format(FORMAT_YOLO)
         tYoloParseReader = YoloReader(txtPath, self.image)
         shapes = tYoloParseReader.getShapes()
-        print (shapes)
         self.loadLabels(shapes)
         self.canvas.verified = tYoloParseReader.verified
 

@@ -3,6 +3,7 @@ from libs.ustr import ustr
 import hashlib
 import re
 import sys
+import json 
 
 try:
     from PyQt5.QtGui import *
