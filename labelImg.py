@@ -227,19 +227,11 @@ class MainWindow(QMainWindow, WindowMixin):
                                  'Ctrl+Shift+O', 'open', get_str('openAnnotationDetail'))
         copy_prev_bounding = action(get_str('copyPrevBounding'), self.copy_previous_bounding_boxes, 'Ctrl+v', 'copy', get_str('copyPrevBounding'))
 
-<<<<<<< HEAD
-        openNextImg = action(getStr('nextImg'), self.openNextImg,
-                             'c', 'next', getStr('nextImgDetail'))
-
-        openPrevImg = action(getStr('prevImg'), self.openPrevImg,
-                             'z', 'prev', getStr('prevImgDetail'))
-=======
         open_next_image = action(get_str('nextImg'), self.open_next_image,
                                  'd', 'next', get_str('nextImgDetail'))
 
         open_prev_image = action(get_str('prevImg'), self.open_prev_image,
                                  'a', 'prev', get_str('prevImgDetail'))
->>>>>>> original_org/master
 
         verify = action(get_str('verifyImg'), self.verify_image,
                         'space', 'verify', get_str('verifyImgDetail'))
@@ -247,13 +239,6 @@ class MainWindow(QMainWindow, WindowMixin):
         save = action(get_str('save'), self.save_file,
                       'Ctrl+S', 'save', get_str('saveDetail'), enabled=False)
 
-<<<<<<< HEAD
-        save_format = action('&PascalVOC', self.change_format,
-                      'b', 'format_voc', getStr('changeSaveFormat'), enabled=True)
-
-        saveAs = action(getStr('saveAs'), self.saveFileAs,
-                        'Ctrl+b', 'save-as', getStr('saveAsDetail'), enabled=False)
-=======
         def get_format_meta(format):
             """
             returns a tuple containing (title, icon_name) of the selected format
@@ -269,7 +254,6 @@ class MainWindow(QMainWindow, WindowMixin):
                              self.change_format, 'Ctrl+Y',
                              get_format_meta(self.label_file_format)[1],
                              get_str('changeSaveFormat'), enabled=True)
->>>>>>> original_org/master
 
         save_as = action(get_str('saveAs'), self.save_file_as,
                          'Ctrl+Shift+S', 'save-as', get_str('saveAsDetail'), enabled=False)
@@ -278,19 +262,6 @@ class MainWindow(QMainWindow, WindowMixin):
 
         delete_image = action(get_str('deleteImg'), self.delete_image, 'Ctrl+Shift+D', 'close', get_str('deleteImgDetail'))
 
-<<<<<<< HEAD
-        createMode = action(getStr('crtBox'), self.setCreateMode,
-                            'v', 'new', getStr('crtBoxDetail'), enabled=False)
-        editMode = action('&Edit\nRectBox', self.setEditMode,
-                          'Ctrl+J', 'edit', u'Move and edit Boxs', enabled=False)
-
-        create = action(getStr('crtBox'), self.createShape,
-                        'v', 'new', getStr('crtBoxDetail'), enabled=False)
-        delete = action(getStr('delBox'), self.deleteSelectedShape,
-                        'f', 'delete', getStr('delBoxDetail'), enabled=False)
-        copy = action(getStr('dupBox'), self.copySelectedShape,
-                      'Ctrl+D', 'copy', getStr('dupBoxDetail'),
-=======
         reset_all = action(get_str('resetAll'), self.reset_all, None, 'resetall', get_str('resetAllDetail'))
 
         color1 = action(get_str('boxLineColor'), self.choose_color1,
@@ -307,7 +278,6 @@ class MainWindow(QMainWindow, WindowMixin):
                         'Delete', 'delete', get_str('delBoxDetail'), enabled=False)
         copy = action(get_str('dupBox'), self.copy_selected_shape,
                       'Ctrl+D', 'copy', get_str('dupBoxDetail'),
->>>>>>> original_org/master
                       enabled=False)
 
         advanced_mode = action(get_str('advancedMode'), self.toggle_advanced_mode,
@@ -854,16 +824,6 @@ class MainWindow(QMainWindow, WindowMixin):
 
             if line_color:
                 shape.line_color = QColor(*line_color)
-<<<<<<< HEAD
-            # else:
-            #     shape.line_color = generateColorByText(label)
-
-            if fill_color:
-                shape.fill_color = QColor(*fill_color)
-
-            # else:
-            #     shape.fill_color = generateColorByText(label)
-=======
             else:
                 shape.line_color = generate_color_by_text(label)
 
@@ -871,7 +831,6 @@ class MainWindow(QMainWindow, WindowMixin):
                 shape.fill_color = QColor(*fill_color)
             else:
                 shape.fill_color = generate_color_by_text(label)
->>>>>>> original_org/master
 
             self.add_label(shape)
         self.update_combo_box()
@@ -961,13 +920,8 @@ class MainWindow(QMainWindow, WindowMixin):
         label = item.text()
         if label != shape.label:
             shape.label = item.text()
-<<<<<<< HEAD
-            # shape.line_color = generateColorByText(shape.label)
-            self.setDirty()
-=======
             shape.line_color = generate_color_by_text(shape.label)
             self.set_dirty()
->>>>>>> original_org/master
         else:  # User probably changed item visibility
             self.canvas.set_shape_visible(shape, item.checkState() == Qt.Checked)
 
@@ -994,17 +948,10 @@ class MainWindow(QMainWindow, WindowMixin):
         # Add Chris
         self.diffc_button.setChecked(False)
         if text is not None:
-<<<<<<< HEAD
-            self.prevLabelText = text
-            # generate_color = generateColorByText(text)
-            shape = self.canvas.setLastLabel(text)#, generate_color, generate_color)
-            self.addLabel(shape)
-=======
             self.prev_label_text = text
             generate_color = generate_color_by_text(text)
             shape = self.canvas.set_last_label(text, generate_color, generate_color)
             self.add_label(shape)
->>>>>>> original_org/master
             if self.beginner():  # Switch to edit mode.
                 self.canvas.set_editing(True)
                 self.actions.create.setEnabled(True)
